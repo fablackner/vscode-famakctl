@@ -4,20 +4,28 @@
 
 This has evolved over many iterations for my own workflow. It might not fit everyone, but you can try it and decide if it feels good for you.
 
-## Install manually from `.vsix`
+## Install from source
 
 1. Clone or download this repository.
-2. Open VS Code.
-3. Open the Command Palette (`Ctrl+Shift+P`).
-4. Run **Extensions: Install from VSIX...**
-5. Choose `famakctl-0.0.1.vsix` from this folder.
-6. Reload VS Code if prompted.
+2. Build a VSIX package:
+
+   ```bash
+   npx @vscode/vsce package
+   ```
+
+3. Open VS Code.
+4. Open the Command Palette (`Ctrl+Shift+P`).
+5. Run **Extensions: Install from VSIX...**
+6. Choose the generated `famakctl-<version>.vsix` file.
+7. Reload VS Code if prompted.
 
 Terminal install also works:
 
 ```bash
-code --install-extension famakctl-0.0.1.vsix
+code --install-extension famakctl-<version>.vsix
 ```
+
+> The repository does not keep a committed `.vsix` file, and existing GitHub releases may not include a VSIX asset yet.
 
 ## How to use
 

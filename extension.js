@@ -1,8 +1,5 @@
 const vscode = require("vscode");
 
-let scrollInterval = null;
-let lastScrollDirection = null;
-
 function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.lookDown', () => look('down')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.lookUp', () => look('up')));
@@ -13,14 +10,9 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.scrollUp', () => scroll('up')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.scrollFastDown', () => fastScroll('down')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.scrollFastUp', () => fastScroll('up')));
-    context.subscriptions.push(vscode.commands.registerCommand('famakctl.placeCursorDown', () => placeCursorRelative('bottom', 11)));
-    context.subscriptions.push(vscode.commands.registerCommand('famakctl.placeCursorUp', () => placeCursorRelative('top', 11)));
-    context.subscriptions.push(vscode.commands.registerCommand('famakctl.placeCursorMiddle', () => placeCursorMiddle()));
+    context.subscriptions.push(vscode.commands.registerCommand('famakctl.placeCursorUp', () => placeCursorUp()));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.moveCursorConditionalUp', () => moveCursorConditional("up", 3)));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.moveCursorConditionalDown', () => moveCursorConditional("down", 3)));
-    context.subscriptions.push(vscode.commands.registerCommand('famakctl.startScrollDown', () => startScrolling('down')));
-    context.subscriptions.push(vscode.commands.registerCommand('famakctl.startScrollUp', () => startScrolling('up')));
-    context.subscriptions.push(vscode.commands.registerCommand('famakctl.stopScrolling', () => stopScrolling()));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.selectLineWithPreviousBreakDown', () => selectLineWithPreviousBreakDown()));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.selectLineWithPreviousBreakUp', () => selectLineWithPreviousBreakUp()));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.revealCellAtTop', () => revealCellAtTop()));
@@ -176,22 +168,21 @@ function move(direction) {
     }
 }
 
-function placeCursorRelative(position, offset) {
+function placeCursorUp() {
     const activeTextEditor = vscode.window.activeTextEditor;
 
     if (activeTextEditor) {
-        const { start, end } = activeTextEditor.visibleRanges[0];
-        const targetLineNumber = position === 'top' ? Math.min(start.line + offset - 1, activeTextEditor.document.lineCount - 1)
-            : Math.max(end.line - offset, 0);
+        const offset = 11;
+        const { start } = activeTextEditor.visibleRanges[0];
+        const targetLineNumber = Math.min(start.line + offset - 1, activeTextEditor.document.lineCount - 1);
 
         const lineText = activeTextEditor.document.lineAt(targetLineNumber).text;
-        const endOfLineCharacter = lineText.length;
-        const newPosition = new vscode.Position(targetLineNumber, endOfLineCharacter);
+        const newPosition = new vscode.Position(targetLineNumber, lineText.length);
 
         activeTextEditor.selection = new vscode.Selection(newPosition, newPosition);
         activeTextEditor.revealRange(new vscode.Range(newPosition, newPosition), vscode.TextEditorRevealType.Default);
 
-        console.log(`Placed cursor ${position} ${offset} lines`);
+        console.log('Placed cursor up');
     } else {
         console.error('No active text editor!');
     }
@@ -234,64 +225,6 @@ function moveCursorConditional(direction, numberOfLines) {
         }
     } else {
         console.error('No active text editor!');
-    }
-}
-
-let scrollSpeed = 16; // Initial scroll speed (in milliseconds)
-let scrollStep = 2; // Initial scroll step (lines per scroll)
-
-function startScrolling(direction) {
-    if (scrollInterval) {
-        if (lastScrollDirection === direction) {
-            // Speed up the scrolling by reducing the interval and increasing the step size
-            scrollSpeed = scrollSpeed / 2; // Limit the minimum interval
-            scrollStep = scrollStep + 1; // Increase step size
-            clearInterval(scrollInterval); // Clear the existing interval
-            scrollInterval = setInterval(() => {
-                vscode.commands.executeCommand('editorScroll', {
-                    to: direction,
-                    by: "wrappedLine",
-                    value: scrollStep
-                });
-            }, scrollSpeed);
-        } else {
-            // Stop scrolling if the direction changes
-            stopScrolling();
-            return;
-        }
-    } else {
-        // Start scrolling in the specified direction
-        scrollInterval = setInterval(() => {
-            vscode.commands.executeCommand('editorScroll', {
-                to: direction,
-                by: "wrappedLine",
-                value: scrollStep
-            });
-        }, scrollSpeed);
-        lastScrollDirection = direction;
-
-        // Stop scrolling when the selection changes (arrow keys, mouse)
-        vscode.window.onDidChangeTextEditorSelection(stopScrolling);
-
-        // Stop scrolling when a document change occurs (typing, etc.)
-        vscode.workspace.onDidChangeTextDocument(() => {
-            stopScrolling();
-        });
-
-        // Stop scrolling when the active editor changes (switching tabs)
-        vscode.window.onDidChangeActiveTextEditor(() => {
-            stopScrolling();
-        });
-    }
-}
-
-function stopScrolling() {
-    if (scrollInterval) {
-        clearInterval(scrollInterval);
-        scrollInterval = null;
-        scrollSpeed = 16; // Reset to initial speed
-        scrollStep = 2;   // Reset to initial step size
-        lastScrollDirection = null;
     }
 }
 

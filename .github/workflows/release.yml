@@ -1,0 +1,33 @@
+name: Release VSIX
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Install vsce
+        run: npm install --global @vscode/vsce
+
+      - name: Build VSIX
+        run: vsce package
+
+      - name: Create GitHub release and upload VSIX
+        uses: softprops/action-gh-release@v3
+        with:
+          files: famakctl-*.vsix
+          generate_release_notes: true

@@ -3,7 +3,7 @@
   "displayName": "famakctl",
   "description": "Shortcuts and custom commands for the Famak keyboard layout",
   "publisher": "fablackner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [ ],
+  "activationEvents": [],
   "main": "./extension.js",
   "contributes": {
     "commands": [
@@ -76,14 +76,6 @@
         "title": "move up to Cursor"
       },
       {
-        "command": "famakctl.placeCursorDown",
-        "title": "place cursor down"
-      },
-      {
-        "command": "famakctl.placeCursorMiddle",
-        "title": "place cursor middle of page"
-      },
-      {
         "command": "famakctl.placeCursorUp",
         "title": "place cursor up"
       },
@@ -132,24 +124,12 @@
         "title": "notebook cell scroll up"
       },
       {
-        "command": "famakctl.startScrollDown",
-        "title": "start scroll down"
-      },
-      {
-        "command": "famakctl.startScrollUp",
-        "title": "start scroll up"
-      },
-      {
         "command": "famakctl.scrollDown",
         "title": "scroll down"
       },
       {
         "command": "famakctl.scrollUp",
         "title": "scroll up"
-      },
-      {
-        "command": "famakctl.stopScrolling",
-        "title": "stop scrolling"
       }
     ],
     "configuration": {
@@ -282,12 +262,12 @@
       },
       {
         "key": "pageup",
-        "command": "famakctl.startScrollUp",
+        "command": "kineticScroll.startKineticScrollUp",
         "when": "editorTextFocus"
       },
       {
         "key": "pagedown",
-        "command": "famakctl.startScrollDown",
+        "command": "kineticScroll.startKineticScrollDown",
         "when": "editorTextFocus"
       },
       {
@@ -467,14 +447,6 @@
       {
         "key": "ctrl+shift+alt+end",
         "command": "editor.action.moveCarretRightAction"
-      },
-      {
-        "key": "ctrl+up",
-        "command": "famakctl.lookDown"
-      },
-      {
-        "key": "ctrl+down",
-        "command": "famakctl.scrollDown"
       },
       {
         "key": "ctrl+n",
@@ -792,7 +764,7 @@
       },
       {
         "key": "insert",
-        "command": "famakctl.placeCursorMiddle",
+        "command": "kineticScroll.placeCursorMiddle",
         "when": "editorTextFocus"
       },
       {
