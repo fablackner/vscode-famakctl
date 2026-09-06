@@ -3,7 +3,7 @@
   "displayName": "famakctl",
   "description": "Shortcuts and custom commands for the Famak keyboard layout",
   "publisher": "fablackner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -54,6 +54,10 @@
       {
         "command": "famakctl.lookMiddle",
         "title": "look middle to Cursor"
+      },
+      {
+        "command": "famakctl.lookTop",
+        "title": "look top to Cursor"
       },
       {
         "command": "famakctl.lookUp",
@@ -585,6 +589,11 @@
         "key": "ctrl+l",
         "command": "-expandLineSelection",
         "when": "textInputFocus"
+      },
+      {
+        "key": "ctrl+l",
+        "command": "famakctl.lookTop",
+        "when": "editorTextFocus"
       },
       {
         "key": "ctrl+s",

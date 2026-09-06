@@ -4,6 +4,7 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.lookDown', () => look('down')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.lookUp', () => look('up')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.lookMiddle', () => lookMiddle()));
+    context.subscriptions.push(vscode.commands.registerCommand('famakctl.lookTop', () => lookTop()));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.moveDown', () => move('down')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.moveUp', () => move('up')));
     context.subscriptions.push(vscode.commands.registerCommand('famakctl.scrollDown', () => scroll('down')));
@@ -309,6 +310,19 @@ function selectCellAtTop() {
     const firstVisibleRange = visibleRanges[0];
     const firstCellRange = new vscode.NotebookRange(firstVisibleRange.start, firstVisibleRange.start);
     notebookEditor.selections = [firstCellRange];
+}
+
+function lookTop() {
+    const activeTextEditor = vscode.window.activeTextEditor;
+
+    if (activeTextEditor) {
+        const currentLineNumber = activeTextEditor.selection.start.line;
+
+        vscode.commands.executeCommand('revealLine', { lineNumber: currentLineNumber, at: 'top' })
+            .then(() => console.log('Moved current line to top'), console.error);
+    } else {
+        console.error('No active text editor!');
+    }
 }
 
 function lookMiddle() {
